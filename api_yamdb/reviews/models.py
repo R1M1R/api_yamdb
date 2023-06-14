@@ -31,7 +31,12 @@ class Review(models.Model):
             MinValueValidator(settings.MIN_VALUE_SCORE),
             MaxValueValidator(settings.MAX_VALUE_SCORE)
         ),
-        error_messages='Значение не входит в допустимый диапазон'
+        error_messages={
+            'validators': (
+                f'Оценка должна быть от {settings.MIN_VALUE_SCORE}'
+                f'до {settings.MAX_VALUE_SCORE}!'
+            ),
+        },
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
