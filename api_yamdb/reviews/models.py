@@ -7,7 +7,7 @@ class Category(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо названия котегории'
+        help_text='Необходимо название котегории'
     )
     slug = models.SlugField(
         max_length=50,
@@ -29,7 +29,7 @@ class Genre(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо названия жанра',
+        help_text='Необходимо название жанра',
     )
     slug = models.SlugField(
         max_length=50,
@@ -51,7 +51,7 @@ class Title(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо названия произведения',
+        help_text='Необходимо название произведения',
     )
 
     description = models.TextField(
