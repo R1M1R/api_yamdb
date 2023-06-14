@@ -13,7 +13,9 @@ class User(AbstractUser):
     ]
     email = models.EmailField(
         verbose_name='Почта',
-        unique=True)
+        blank=False,
+        unique=True
+    )
     role = models.CharField(
         max_length=20,
         choices=ROLES,
@@ -32,6 +34,23 @@ class User(AbstractUser):
         ordering = ('id',)
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('username', 'email'),
+                name='unique_username_email'),
+        )
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_user(self):
+        return self.role == self.USER
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
