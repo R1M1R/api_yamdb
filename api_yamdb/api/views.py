@@ -47,7 +47,8 @@ class CommentsViewSet(viewsets.ModelViewSet):
         """Получаем комментарии связанных отзывов."""
         review = get_object_or_404(
             Review,
-            id=self.kwargs.get('review_id')
+            id=self.kwargs.get('review_id'),
+            title__id=self.kwargs.get('title_id')
         )
         return review.comments.all()
 
