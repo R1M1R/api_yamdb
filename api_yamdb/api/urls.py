@@ -1,5 +1,5 @@
 from django.urls import include, path
-from user.views import APIRegistrUser, APIGetToken
+from users.views import APIRegistrUser, APIGetToken
 
 auth_patterns = [
     path('signup/', APIRegistrUser.as_view(), name='register_user'),

@@ -2,9 +2,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from reviews.validators import validate_title_year
-from django.contrib.auth import get_user_model  # Использую пока нет модели User
-
-User = get_user_model()
+from users.models import User
 
 
 class Category(models.Model):
@@ -153,14 +151,14 @@ class Review(models.Model):
     )
 
     class Meta:
-        ordering = ('-pub_date',)
+        ordering = ('pub_date',)
         verbose_name_plural = 'Отзывы'
         verbose_name = 'Отзыв'
         constraints = (
             models.UniqueConstraint(
                 fields=('author', 'title'),
-                name='unique_reviews'
-            )
+                name='unique reviews',
+            ),
         )
 
     def __str__(self) -> str:

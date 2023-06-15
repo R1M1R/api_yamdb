@@ -1,4 +1,4 @@
-from user.serializers import RegistrUserSerializer, GetTokenSerializer
+from users.serializers import RegistrUserSerializer, GetTokenSerializer
 from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.conf import settings

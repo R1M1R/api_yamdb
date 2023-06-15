@@ -31,12 +31,12 @@ class User(AbstractUser):
     )
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('-id',)
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
         constraints = (
             models.UniqueConstraint(
-                fields=('username', 'email'),
+                fields=['username', 'email'],
                 name='unique_username_email'),
         )
 
