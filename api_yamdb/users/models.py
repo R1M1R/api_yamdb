@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from api_yamdb.settings import CONFIRMATION_CODE_LENGTH
 
 
 class User(AbstractUser):
@@ -26,7 +27,7 @@ class User(AbstractUser):
         blank=True,
     )
     confirmation_code = models.CharField(
-        max_length=8,
+        max_length=CONFIRMATION_CODE_LENGTH,
         blank=True
     )
 

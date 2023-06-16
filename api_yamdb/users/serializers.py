@@ -1,11 +1,21 @@
 from .models import User
 from rest_framework import serializers
+from api_yamdb.settings import NOT_ALLOWED_USERNAME
+
+USERNAME_CHECK = r'^[\w.@+-]+$'
 
 
 class RegistrUserSerializer(serializers.Serializer):
 
-    username = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
+    username = serializers.RegexField(
+        regex=USERNAME_CHECK,
+        max_length=150,
+        required=True
+    )
+    email = serializers.EmailField(
+        max_length=254,
+        required=True
+    )
 
     def create(self, validated_data):
         return User.objects.create(**validated_data)
@@ -19,7 +29,7 @@ class RegistrUserSerializer(serializers.Serializer):
         return instance
 
     def validate(self, data):
-        if data['username'] == 'me':
+        if data['username'] == NOT_ALLOWED_USERNAME:
             raise serializers.ValidationError(
                 'Использовать имя me в качестве username запрещено.'
             )
@@ -32,8 +42,15 @@ class RegistrUserSerializer(serializers.Serializer):
 
 class GetTokenSerializer(serializers.Serializer):
 
-    username = serializers.CharField(required=True)
-    confirmation_code = serializers.CharField(required=True)
+    username = serializers.RegexField(
+        regex=USERNAME_CHECK,
+        max_length=150,
+        required=True
+    )
+    confirmation_code = serializers.CharField(
+        max_length=8,
+        required=True
+    )
 
     class Meta:
         model = User

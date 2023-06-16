@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from .models import User
+from random import randrange
+from django.db.utils import IntegrityError
+from api_yamdb.settings import CONFIRMATION_CODE_LENGTH
 
 
 class APIRegistrUser(APIView):
@@ -14,7 +17,8 @@ class APIRegistrUser(APIView):
         serializer = RegistrUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = User.objects.filter(
-            username=serializer.validated_data.get('username')
+            username=serializer.validated_data.get('username'),
+            email=serializer.validated_data.get('email')
         ).first()
         if user:
             serializer = RegistrUserSerializer(
@@ -22,8 +26,17 @@ class APIRegistrUser(APIView):
                 instance=user
             )
             serializer.is_valid(raise_exception=True)
-        confirmation_code = 'TEST' ##Дописать генерацию 
-        serializer.save(confirmation_code=confirmation_code)
+        confirmation_code = str(
+            randrange(10**CONFIRMATION_CODE_LENGTH)).zfill(
+            CONFIRMATION_CODE_LENGTH
+        )
+        try:
+            serializer.save(confirmation_code=confirmation_code)
+        except IntegrityError as r1:
+            name_fild = str(r1).split('.')[1]
+            return Response(
+                {name_fild: 'Поле должно быть уникальным'},
+                status=status.HTTP_400_BAD_REQUEST)
         send_mail(
             subject='Регистрация.',
             message=f'Ваш код подтверждения: {confirmation_code}',
