@@ -1,3 +1,27 @@
 from django.contrib import admin
 
-# Register your models here.
+from reviews.models import Category, Comments, Genre
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'slug')
+    search_fields = ('name',)
+    empty_value_diplay = '-пусто-'
+
+
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'slug')
+    search_fields = ('name',)
+    empty_value_diplay = '-пусто-'
+
+
+class TitleAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'description', 'year', 'category')
+    search_fields = ('name',)
+    list_filter = ('year', 'category')
+    empty_value_diplay = '-пусто-'
+
+
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Comments)
+admin.site.register(Genre, GenreAdmin)

@@ -1,3 +1,8 @@
-from django.test import TestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# Create your tests here.
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'token': str(refresh.access_token),
+    }
