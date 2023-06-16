@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 from reviews.validators import validate_title_year
 from users.models import User
 
@@ -9,7 +10,7 @@ class Category(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо название котегории'
+        help_text='Необходимо названия котегории'
     )
     slug = models.SlugField(
         max_length=50,
@@ -31,7 +32,7 @@ class Genre(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо название жанра',
+        help_text='Необходимо названия жанра',
     )
     slug = models.SlugField(
         max_length=50,
@@ -53,7 +54,7 @@ class Title(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Название',
-        help_text='Необходимо название произведения',
+        help_text='Необходимо названия произведения',
     )
 
     description = models.TextField(
@@ -118,42 +119,43 @@ class Review(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='reviews',
-        verbose_name='Автор'
+        verbose_name='Автор отзыва',
+        help_text='Пользователь, который оставил отзыв',
     )
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение',
-        help_text='Выберете произведение, чтобы оставить свой отзыв'
+        help_text='Выберите произведение, к которому хотите оставить отзыв',
     )
     text = models.TextField(
         verbose_name='Текст отзыва',
-        help_text='Введите текст своего отзыва'
     )
     score = models.IntegerField(
-        verbose_name='Оценка произведения',
-        help_text='Укажите свою оценку произведению',
         validators=(
-            MinValueValidator(settings.MIN_VALUE_SCORE),
-            MaxValueValidator(settings.MAX_VALUE_SCORE)
+            MinValueValidator(settings.MIN_SCORE_VALUE),
+            MaxValueValidator(settings.MAX_SCORE_VALUE)
         ),
         error_messages={
             'validators': (
-                f'Оценка должна быть от {settings.MIN_VALUE_SCORE}'
-                f'до {settings.MAX_VALUE_SCORE}!'
-            ),
+                f'Оценка должна быть от {settings.MIN_SCORE_VALUE}'
+                f'до {settings.MAX_SCORE_VALUE}!'
+            )
         },
+        verbose_name='Оценка произведения',
+        help_text='Укажите оценку произведения'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата публикации'
+        verbose_name='Дата публикации',
+        help_text='Дата публикации отзыва, проставляется автоматически.',
     )
 
     class Meta:
         ordering = ('pub_date',)
-        verbose_name_plural = 'Отзывы'
         verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
         constraints = (
             models.UniqueConstraint(
                 fields=('author', 'title'),
@@ -162,7 +164,7 @@ class Review(models.Model):
         )
 
     def __str__(self) -> str:
-        return self.text
+        return self.text[:15]
 
 
 class Comments(models.Model):
@@ -170,27 +172,30 @@ class Comments(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='Автор комментария'
+        verbose_name='Автор комментария',
+        help_text='Пользователь, который оставил комментарий'
     )
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
+        help_text='Отзыв, к которому оставляют комментарий'
     )
     text = models.TextField(
         verbose_name='Текст комментария',
-        help_text='Введите текст комментария'
+        help_text='Текст комментария, который пишет пользователь'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата публикации комментария'
+        verbose_name='Дата публикации комментария',
+        help_text='Дата публикации проставляется автоматически'
     )
 
     class Meta:
-        ordering = ('-pub_date',)
-        verbose_name_plural = 'Комментарии'
+        ordering = ('pub_date',)
         verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self) -> str:
-        return self.text
+        return self.text[:15]
