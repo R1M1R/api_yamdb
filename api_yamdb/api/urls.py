@@ -1,7 +1,6 @@
 from rest_framework import routers
-
+from users.views import APIRegistrUser, APIGetToken
 from django.urls import include, path
-
 from api.views import (
     ReviewViewSet,
     CommentsViewSet
@@ -19,6 +18,14 @@ router.register(
     basename='comments'
 )
 
+
+auth_patterns = [
+    path('signup/', APIRegistrUser.as_view(), name='register_user'),
+    path('token/', APIGetToken.as_view(), name='get_token'),
+]
+
+
 urlpatterns = [
-    path('v1/', include(router.urls)),
+    path('v1/auth/', include(auth_patterns)),
+    path('v1/', include(router.urls)
 ]
