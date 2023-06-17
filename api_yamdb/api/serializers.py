@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from api.permissions import IsAdminOrStaff
-from reviews.models import Category, Genre, Title, Review, Comments,
+from reviews.models import Category, Genre, Title, Review, Comments
 from reviews.validators import validate_title_year
 from users.models import User
 
