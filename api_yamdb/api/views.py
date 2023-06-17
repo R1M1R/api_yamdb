@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from api.filters import FilterTitle
 from api.mixins import ModelMixinSet
-from api.permissions import (IsAdminOrStaff,IsAdminModeratorAuthorOrReadOnly,
+from api.permissions import (IsAdminOrStaff, IsAdminModeratorAuthorOrReadOnly,
                              IsAdminUserOrReadOnly)
 from api.serializers import (AuthTokenSerializer, CategorySerializer,
                              GenreSerializer,
@@ -21,7 +21,7 @@ from reviews.models import Category, Genre, Title, Review, Title
 from users.models import User
 from users.token import get_tokens_for_user
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from rest_framework.permissions import (
     IsAuthenticated, IsAuthenticatedOrReadOnly
 )
@@ -29,6 +29,7 @@ from .serializers import (
     ReviewSerializer,
     CommentSerializer
 )
+
 
 @api_view(('POST',))
 @permission_classes((AllowAny,))
