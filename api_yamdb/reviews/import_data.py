@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from api_yamdb.settings import BASE_DIR
 from reviews.models import Category, Comments, Genre, GenreTitle, Review, Title
-from django.contrib.auth import get_user_model 
+from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
