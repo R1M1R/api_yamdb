@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.tokens import AccessToken
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, viewsets
+from rest_framework import filters, status, viewsets, response
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -19,7 +21,6 @@ from api.serializers import (AuthTokenSerializer, CategorySerializer,
 from api.utils import send_confirmation_code_to_email
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
-from users.token import get_tokens_for_user
 
 
 @api_view(('POST',))
@@ -32,7 +33,7 @@ def signup(request):
             user, data=request.data, partial=True
         )
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data['email'] != user.email:
+        if serializer.validated_data.get('email') != user.email:
             return Response(
                 'Почта указана неверно!', status=status.HTTP_400_BAD_REQUEST
             )
@@ -42,7 +43,7 @@ def signup(request):
 
     serializer = SignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    if serializer.validated_data['username'] != settings.NOT_ALLOWED_USERNAME:
+    if serializer.validated_data.get('username') != settings.NOT_ALLOWED_USERNAME:
         serializer.save()
         send_confirmation_code_to_email(username)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -60,11 +61,20 @@ def signup(request):
 def get_token(request):
     serializer = AuthTokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = get_object_or_404(User, username=request.data['username'])
-    confirmation_code = serializer.data.get('confirmation_code')
-    if confirmation_code == str(user.confirmation_code):
-        return Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    username = serializer.validated_data.get('username')
+    user = get_object_or_404(User, username=username)
+    confirmation_code = serializer.validated_data.get(
+        'confirmation_code'
+    )
+    if default_token_generator.check_token(user, confirmation_code):
+        token = AccessToken.for_user(user)
+        return response.Response(
+            {'token': str(token)}, status=status.HTTP_200_OK
+        )
+    return response.Response(
+        {'confirmation_code': 'Неверный код подтверждения!'},
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 class CategoryViewSet(ModelMixinSet):
