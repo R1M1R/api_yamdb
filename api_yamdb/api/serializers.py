@@ -5,6 +5,7 @@ from api.permissions import IsAdminOrStaff
 from reviews.models import Category, Comments, Genre, Review, Title
 from reviews.validators import validate_title_year
 from users.models import User
+from django.conf import settings
 
 USERNAME_CHECK = r'^[\w.@+-]+$'
 
@@ -13,6 +14,20 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username')
+
+    def validate_email(self, value):
+        if self.instance and self.instance.email != value:
+            raise serializers.ValidationError(
+                'Почта указана неверно!'
+            )
+        return value
+
+    def validate(self, data):
+        if data.get('username') == settings.NOT_ALLOWED_USERNAME:
+            raise serializers.ValidationError(
+                'Использовать имя me в качестве username запрещено.'
+            )
+        return data
 
 
 class AuthTokenSerializer(serializers.Serializer):
