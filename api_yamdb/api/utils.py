@@ -10,11 +10,15 @@ def send_confirmation_code_to_email(username):
     user = get_object_or_404(User, username=username)
     confirmation_code = default_token_generator.make_token(user)
     user.confirmation_code = confirmation_code
+    send_email(user, confirmation_code)
+    user.save()
+
+
+def send_email(user, confirmation_code):
     send_mail(
         'Код подтвержения для завершения регистрации',
-        f'Ваш код для получения JWT токена {user.confirmation_code}',
+        f'Ваш код для получения JWT токена {confirmation_code}',
         settings.ADMIN_EMAIL,
         (user.email,),
         fail_silently=False,
     )
-    user.save()

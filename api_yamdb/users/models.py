@@ -1,11 +1,10 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from api_yamdb.settings import CONFIRMATION_CODE_LENGTH
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     """Модель пользователя"""
     USER = 'user'
     MODERATOR = 'moderator'
@@ -69,6 +68,3 @@ class CustomUser(AbstractUser):
     @property
     def is_admin(self):
         return self.role == self.ADMIN
-
-
-User = get_user_model()
