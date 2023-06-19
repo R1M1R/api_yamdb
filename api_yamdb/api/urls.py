@@ -21,8 +21,12 @@ router.register(
 )
 router.register('users', UsersViewSet, basename='users')
 
+auth_patterns = [
+    path('signup/', signup, name='user-registration'),
+    path('token/', get_token, name='user_get_token'),
+]
+
 urlpatterns = [
-    path('v1/auth/signup/', signup, name='user-registration'),
-    path('v1/auth/token/', get_token, name='user_get_token'),
-    path('v1/', include(router.urls)),
+    path('', include(router.urls)),
+    path('auth/', include(auth_patterns))
 ]

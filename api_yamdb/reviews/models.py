@@ -64,7 +64,7 @@ class Title(models.Model):
         help_text='Необходимо описание',
     )
 
-    year = models.IntegerField(
+    year = models.PositiveIntegerField(
         verbose_name='Дата выхода',
         help_text='Укажите дату выхода',
         validators=(validate_title_year,)
@@ -132,7 +132,7 @@ class Review(models.Model):
     text = models.TextField(
         verbose_name='Текст отзыва',
     )
-    score = models.IntegerField(
+    score = models.PositiveIntegerField(
         validators=(
             MinValueValidator(settings.MIN_SCORE_VALUE),
             MaxValueValidator(settings.MAX_SCORE_VALUE)
@@ -164,7 +164,7 @@ class Review(models.Model):
         )
 
     def __str__(self) -> str:
-        return self.text[:15]
+        return self.text[:settings.MAX_NUMBER_REVIEW]
 
 
 class Comments(models.Model):
@@ -198,4 +198,4 @@ class Comments(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self) -> str:
-        return self.text[:15]
+        return self.text[:settings.MAX_NUMBER_COMMENTS]
