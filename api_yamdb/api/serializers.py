@@ -6,7 +6,7 @@ from reviews.models import Category, Comments, Genre, Review, Title
 from reviews.validators import validate_title_year
 from users.models import User
 
-USERNAME_CHECK = r'^[\w.@+-]+$'  # Проверка имени на отсутствие спецсимволов
+USERNAME_CHECK = r'^[\w.@+-]+$'
 
 
 class SignUpSerializer(serializers.ModelSerializer):

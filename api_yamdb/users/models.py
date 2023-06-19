@@ -19,7 +19,7 @@ class CustomUser(AbstractUser):
     role = models.CharField(
         max_length=16,
         choices=CHOICES,
-        default='user',
+        default=USER,
         verbose_name='Уровень доступа пользователя',
         help_text='Уровень доступа пользователя'
     )
